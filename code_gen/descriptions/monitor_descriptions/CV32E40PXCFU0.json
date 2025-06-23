@@ -1,0 +1,1059 @@
+{
+    "trace": {
+        "name": "CV32E40PXCFU0",
+	    "core": "RV32IMACFDXCFU0",
+        "setId": "Manual",
+        "traceValues": [
+            {
+                "name": "rs1",
+                "type": "uint64_t"
+            },
+            {
+                "name": "rs2",
+                "type": "uint64_t"
+            },
+            {
+                "name": "rd",
+                "type": "uint64_t"
+            },
+            {
+                "name": "pc",
+                "type": "uint64_t"
+            },
+            {
+                "name": "brTarget",
+                "type": "uint64_t"
+            },
+            {
+                "name": "rs2_data",
+                "type": "uint64_t"
+            }
+        ],
+        "instructions": [
+            {
+                "name": "ADD",
+                "id": 0,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SUB",
+                "id": 1,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "XOR",
+                "id": 2,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "OR",
+                "id": 3,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "AND",
+                "id": 4,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SLT",
+                "id": 5,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SLTU",
+                "id": 6,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SLL",
+                "id": 7,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SRL",
+                "id": 8,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SRA",
+                "id": 9,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "ADDI",
+                "id": 10,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "XORI",
+                "id": 11,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "ORI",
+                "id": 12,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "ANDI",
+                "id": 13,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SLTI",
+                "id": 14,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SLTIU",
+                "id": 15,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SLLI",
+                "id": 16,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SRLI",
+                "id": 17,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SRAI",
+                "id": 18,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "AUIPC",
+                "id": 19,
+                "mappings": [
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "LUI",
+                "id": 20,
+                "mappings": [
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "MUL",
+                "id": 21,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "MULH",
+                "id": 22,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "MULHU",
+                "id": 23,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "MULHSU",
+                "id": 24,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "DIV",
+                "id": 25,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "rs2_data",
+                        "description": "$reg{$bitfield{rs2}}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "REM",
+                "id": 26,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "rs2_data",
+                        "description": "$reg{$bitfield{rs2}}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "DIVU",
+                "id": 27,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "rs2_data",
+                        "description": "$reg{$bitfield{rs2}}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "REMU",
+                "id": 28,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "rs2_data",
+                        "description": "$reg{$bitfield{rs2}}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "CSRRW",
+                "id": 29,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "CSRRS",
+                "id": 30,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "CSRRC",
+                "id": 31,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "CSRRWI",
+                "id": 32,
+                "mappings": [
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "CSRRSI",
+                "id": 33,
+                "mappings": [
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "CSRRCI",
+                "id": 34,
+                "mappings": [
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SB",
+                "id": 35,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SH",
+                "id": 36,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "SW",
+                "id": 37,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "LW",
+                "id": 38,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "LH",
+                "id": 39,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "LHU",
+                "id": 40,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "LB",
+                "id": 41,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "LBU",
+                "id": 42,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "BEQ",
+                "id": 43,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "brTarget",
+                        "description": "$pc + (((int16_t)($bitfield{imm} << 3)) >> 3)"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "BNE",
+                "id": 44,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "brTarget",
+                        "description": "$pc + (((int16_t)($bitfield{imm} << 3)) >> 3)"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "BLT",
+                "id": 45,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "brTarget",
+                        "description": "$pc + (((int16_t)($bitfield{imm} << 3)) >> 3)"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "BGE",
+                "id": 46,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "brTarget",
+                        "description": "$pc + (((int16_t)($bitfield{imm} << 3)) >> 3)"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "BLTU",
+                "id": 47,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "brTarget",
+                        "description": "$pc + (((int16_t)($bitfield{imm} << 3)) >> 3)"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "BGEU",
+                "id": 48,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rs2",
+                        "description": "$bitfield{rs2}"
+                    },
+                    {
+                        "traceValue": "brTarget",
+                        "description": "$pc + (((int16_t)($bitfield{imm} << 3)) >> 3)"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "_DEF",
+                "id": 49,
+                "mappings": [
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "JAL",
+                "id": 50,
+                "mappings": [
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "brTarget",
+                        "description": "$pc + (((int32_t)($bitfield{imm} << 11)) >> 11)"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            },
+            {
+                "name": "JALR",
+                "id": 51,
+                "mappings": [
+                    {
+                        "traceValue": "rs1",
+                        "description": "$bitfield{rs1}"
+                    },
+                    {
+                        "traceValue": "rd",
+                        "description": "$bitfield{rd}"
+                    },
+                    {
+                        "traceValue": "brTarget",
+                        "description": "($reg{$bitfield{rs1}} + (((int16_t)($bitfield{imm} << 4)) >> 4)) & -2U"
+                    },
+                    {
+                        "traceValue": "pc",
+                        "description": "$pc"
+                    }
+                ]
+            }
+        ]
+    }
+}

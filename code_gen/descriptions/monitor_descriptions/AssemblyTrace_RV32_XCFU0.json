@@ -1,0 +1,16 @@
+{"trace": {
+    "name": "AssemblyTrace_RV32_XCFU0",
+    "core": "RV32IMACFDXCFU0",
+    "setId": "Automatic",
+    "separator": ";",
+    "traceValues": [
+	{"name": "pc"},
+	{"name": "assembly", "type": "string", "size": 50}
+    ],
+    "instructions": [
+	{"name": "_DEF", "mappings": [
+	    {"traceValue": "pc", "description": "$pc"},
+	    {"traceValue": "assembly", "description": "$asm"}
+	]}
+    ]
+}}
