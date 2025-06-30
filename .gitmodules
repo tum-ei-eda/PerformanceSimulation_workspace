@@ -13,3 +13,6 @@
 [submodule "code_gen/descriptions/core_perf_dsl"]
 	path = code_gen/descriptions/core_perf_dsl
 	url = git@github.com:tum-ei-eda/CorePerfDSL-Examples.git
+[submodule "tools/TraceAnalyzer"]
+	path = tools/TraceAnalyzer
+	url = git@github.com:tum-ei-eda/TraceAnalyzer.git
