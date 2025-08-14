@@ -23,6 +23,8 @@ targetSW_prefix = "PSW_TARGETSW_" + args.core.upper() + "_"
 if len(split:=args.targetSW.split(":")) == 1:
    if split[0] == "dhry":
       targetSW = os.environ.get(targetSW_prefix + "DHRYSTONE_DEFAULT")
+   elif split[0] == "dotprod":
+      targetSW = os.environ.get(targetSW_prefix + "DOTPROD_DEFAULT")
    elif split[0] == "float":
       if args.core.upper() == "CVA6":
          targetSW = os.environ.get(targetSW_prefix + "FLOAT")
@@ -33,6 +35,10 @@ if len(split:=args.targetSW.split(":")) == 1:
 elif len(split:=args.targetSW.split(":")) == 2:
    if split[0] == "em":
       targetSW = os.environ.get(targetSW_prefix + "EMBENCH") + "/" + split[1]
+   elif split[0] == "dotprod":
+      mode = split[1]
+      assert mode in ["custom", "default"]
+      targetSW = os.environ.get(targetSW_prefix + "DOTPROD_" + mode.upper())
    elif split[0] == "dhry":
       targetSW = os.environ.get(targetSW_prefix + "DHRYSTONE_OFFSET") + "-" + split[1]
    else:
