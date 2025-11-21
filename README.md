@@ -6,6 +6,8 @@ This is an example workspace for the ETISS-based performance simulator. It conta
 - The ETISS-based performance simulator etiss-perf-sim
 - The M2-ISA-R-Perf code generator to adjust the performance models
 - The Embench benchmark suite, compiled for the CV32E40P (RV32IM) and CVA6 (RV64IM), as a target-software example
+- An extension to support custom dotproduct instructions
+- A lightweight energy estimator based on power report data from a commercial tool in statistical mode
 
 ## First Time Setup
 
@@ -16,10 +18,9 @@ Clone this repository and navigate to its top folder. (The given example uses an
       $ git clone git@github.com:tum-ei-eda/PerformanceSimulation_workspace.git <YOUR_WORKSPACE_NAME>
       $ cd <YOUR_WORKSPACE_NAME>
 
-Switch to the latest release version:
+Switch to the performance & energy version with dotproduct support:
 
-      $ git fetch --tags
-      $ git checkout tags/v0.2
+      $ git checkout perf_energy_dotp
 
 Initialize required git-submodules:
 
@@ -47,6 +48,19 @@ Example: Run a performance simulation for the embench-ud benchmark on the CVA6 a
 Example: Run an instruction simulation (without performance estimation) for the embench-crc32 benchmark on the CV32E40P:
 
       $ ./scripts/run.sh em:crc32 cv32e40p -np
+
+### Performance & Energy Simulation
+
+For energy estimation, the following parameters have to be added to defined:
+- `-uApr`: path to the power report of commercial tool in statistical mode
+- `-uAt`: name of the top module, which should be considered for energy estimation
+- `-uAct`: clock cycle duration, considered for energy estimation (in ns)
+
+
+Example: Run a performance & energy simulation for any custom benchmark on the CVA6:
+
+      $ ./scripts/run_energy.sh custom:<path_to_binary> cva6 -uApr=<path_to_power_rpt> -uAt=ariane -uAct=20
+
 
 ### Code Generation
 
