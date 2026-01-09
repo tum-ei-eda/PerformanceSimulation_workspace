@@ -59,6 +59,18 @@
 	 ]
 	},
 
+	{"name": "CUSTOM0_Type",
+	 "instructions": [{"name": "CUSTOM0"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rs2_data", "description": "$reg{$bitfield{rs2}}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"}
+	 ]
+	},
+
 	{"name": "Reg_Imm_Type",
 	 "instructions": [{"name": "ADDI"}, {"name": "SLTI"}, {"name": "SLTIU"}, {"name": "XORI"}, {"name": "ORI"}, {"name": "ANDI"}, {"name": "SLLI"}, {"name": "SRLI"}, {"name": "SRAI"}],
 	 "mappings": [
