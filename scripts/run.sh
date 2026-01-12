@@ -16,6 +16,9 @@ do
     if [ "$arg" = "cv32e40p" ] && [ ${CORE_SPECIFIED} == 0 ]; then
 	CMD_OPTIONS="${CMD_OPTIONS} --core cv32e40p"
 	CORE_SPECIFIED=1
+    elif [ "$arg" = "cv32e40pxisaac" ] && [ ${CORE_SPECIFIED} == 0 ]; then
+	CMD_OPTIONS="${CMD_OPTIONS} --core cv32e40pxisaac"
+	CORE_SPECIFIED=1
     elif [ "$arg" = "cva6" ] && [ ${CORE_SPECIFIED} == 0 ]; then
 	CMD_OPTIONS="${CMD_OPTIONS} --core cva6"
 	CORE_SPECIFIED=1
