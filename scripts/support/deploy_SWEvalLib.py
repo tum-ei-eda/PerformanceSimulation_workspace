@@ -56,9 +56,10 @@ monitorFiles = {"include":[], "src":[]}
 
 for dir_i in (sourceDir / "code").iterdir():
     if dir_i.is_dir():
-        if dir_i.name in ["perf_model"]:
-            backendFiles["include"].extend(getHeaderFiles(dir_i))
-            backendFiles["src"].extend(getSrcFiles(dir_i))
+        if dir_i.name in [f"perf_estimator"]:
+            # TODO: This is a quick hack. Solve to deploy multiple variants for one model?
+            backendFiles["include"].extend(getHeaderFiles(dir_i / modelName))
+            backendFiles["src"].extend(getSrcFiles(dir_i / modelName))
         elif dir_i.name in ["channel", "printer"]:
             backendFiles["include"].extend(getHeaderFiles(dir_i))
             backendFiles["src"].extend(getSrcFiles(dir_i))
