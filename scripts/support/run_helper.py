@@ -2,6 +2,7 @@
 import argparse
 import os
 import sys
+from pathlib import Path
 
 # Read input arguments
 argParser = argparse.ArgumentParser()
@@ -28,6 +29,8 @@ if len(split:=args.targetSW.split(":")) == 1:
          targetSW = os.environ.get(targetSW_prefix + "FLOAT")
       else:
          raise RuntimeError(f"Target-SW float is currently not supported for {args.core.upper()}")
+   elif Path(args.targetSW).is_file():
+      targetSW = args.targetSW
    else:
       targetSW_failed = True
 elif len(split:=args.targetSW.split(":")) == 2:
