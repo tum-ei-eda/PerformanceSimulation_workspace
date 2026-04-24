@@ -13,3 +13,6 @@
 [submodule "code_gen/descriptions/core_perf_dsl"]
 	path = code_gen/descriptions/core_perf_dsl
 	url = git@github.com:tum-ei-eda/CorePerfDSL-Examples.git
+[submodule "isaac-perf-gen"]
+	path = isaac-perf-gen
+	url = git@github.com:tum-ei-eda/isaac-perf-gen.git
