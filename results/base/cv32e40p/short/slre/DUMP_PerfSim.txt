@@ -1,0 +1,95 @@
+=== Setting up configurations ===
+Initializer::loadIni(): Ini sucessfully loaded /data/work/psw_blockSched_dev/etiss-perf-sim/simulator/ini/common.ini
+Initializer::loadIni(): Ini sucessfully loaded /data/work/psw_blockSched_dev/etiss-perf-sim/simulator/ini/cv32e40p.ini
+Initializer::loadIni(): Ini sucessfully loaded /data/work/psw_blockSched_dev/etiss-perf-sim/simulator/dyn.ini
+Initializer::loadIni(): Ini sucessfully loaded /data/work/psw_blockSched_dev/etiss-perf-sim/simulator/plugin.ini
+  Load Configs from .ini files:
+ETISS: Info: Created new config container: global
+ETISS: Info:   [BoolConfigurations]
+ETISS: Info:     arch.or1k.ignore_sr_iee=false,
+ETISS: Info:     etiss.enable_dmi=true,
+ETISS: Info:     etiss.exit_on_loop=true,
+ETISS: Info:     etiss.load_integrated_libraries=true,
+ETISS: Info:     etiss.log_pc=false,
+ETISS: Info:     jit.debug=false,
+ETISS: Info:     jit.gcc.cleanup=false,
+ETISS: Info:     jit.verify=false,
+ETISS: Info:   [IntConfigurations]
+ETISS: Info:     arch.cpu_cycle_time_ps=10000,
+ETISS: Info:     arch.or1k.if_stall_cycles=0,
+ETISS: Info:     etiss.max_block_size=100,
+ETISS: Info:     ETISS::CPU_quantum_ps=100000,
+ETISS: Info:     ETISS::sim_mode=0,
+ETISS: Info:     ETISS::write_pc_trace_from_time_us=0,
+ETISS: Info:     ETISS::write_pc_trace_until_time_us=3000000,
+ETISS: Info:     simple_mem_system.memseg_length_00=0x00080000,
+ETISS: Info:     simple_mem_system.memseg_length_01=0x00080000,
+ETISS: Info:     simple_mem_system.memseg_origin_00=0x00000000,
+ETISS: Info:     simple_mem_system.memseg_origin_01=0x00080000,
+ETISS: Info:     vp::simulation_time_us=20000000,
+ETISS: Info:   [StringConfigurations]
+ETISS: Info:     arch.cpu=RV32IMACFD,
+ETISS: Info:     etiss.output_path_prefix=,
+ETISS: Info:     jit.type=TCCJIT,
+ETISS: Info:     vp.elf_file=/data/work/psw_blockSched_dev/target_sw/examples/cv32e40p/embench/slre,
+=== Finished setting up configurations ===
+
+=== Setting up test system ===
+  Setting up Memory
+ETISS: Info: The memory segment is allocated uninitialized with length 0x80000 !
+ETISS: Info: New Memory segment added: 1 - [0x0000000007ffff - 0x00000000000000]
+ETISS: Info: The memory segment is allocated uninitialized with length 0x80000 !
+ETISS: Info: New Memory segment added: 2 - [0x000000000fffff - 0x00000000080000]
+ETISS: Info: Assuming CPU architecture RV32IMACFD as set in configuration file. ELF architecture field will be ignored
+ETISS: Info: Initialized the memory segment 1 - RWX[0x00000000017003 - 0x00000000000000] from ELF-file
+ETISS: Info: Initialized the memory segment 2 - RW[0x00000000084b0f - 0x00000000080000] from ELF-file
+  Setting up CPUCore
+  CPU start address: 0x100
+ETISS: Warning: no core number provided for core, using 0
+=== Finished Setting up test system ===
+
+=== Setting up plug-ins ===
+ETISS: Info:   Adding Plugin Logger
+
+ETISS: Info: plugin.logger.logaddr not set on the command line. Checking in .ini file.
+ETISS: Info:     options[plugin.logger.logaddr] = 0x10000000
+
+
+ETISS: Info: plugin.logger.logmask not set on the command line. Checking in .ini file.
+ETISS: Info:     options[plugin.logger.logmask] = 0xF0000000
+
+
+ETISS: Info: Plugin "Logger" loaded via library interface "ETISSINCLUDED"
+
+ETISS: Info:   Adding Plugin PerformanceEstimatorPlugin
+
+ETISS: Info: plugin.perfEst.uArch not set on the command line. Checking in .ini file.
+ETISS: Info:     options[plugin.perfEst.uArch] = CV32E40P
+
+
+Adding Monitor: CV32E40P_DSE_Monitor
+ETISS: Info: Plugin "PerformanceEstimatorPlugin" loaded via library interface "SoftwareEval"
+
+ETISS: Info:  Adding JIT "TCCJIT"
+=== Setting up plug-ins ===
+
+
+=== Simulation start ===
+ETISS: Info: Init Plugin InterruptHandler{COROUTINE}
+ETISS: Info: Init Plugin Logger{SYSTEMWRAPPER}
+ETISS: Info: Init Plugin PerformanceEstimatorPlugin{COROUTINE,TRANSLATION}
+++ Running embench: slre ++
+exit called with code: 0
+-----------------------------------------------------------------------------------------------------------------
+ >> Number of instructions: 2420081
+ >> Estimated number of processor cycles: 3000534
+ >> Estimated average number of processor cycles per instruction: 1.23985
+-----------------------------------------------------------------------------------------------------------------
+CPU Time: 0.0756275s    Simulation Time: 0.721664s
+CPU Cycles (estimated): 2.42008e+06
+MIPS (estimated): 3.35347
+=== Simulation end ===
+
+CPU0 exited with exception: 0x80000000: Finished cpu execution. This is the proper way to exit from etiss::CPUCore::execute.
+
+Total execution time: 0.8804187774658203s
