@@ -51,6 +51,7 @@ BLOCK_LIST_DIR=${PSW_WORKSPACE}/BLOCK_LISTS
 
 trap "echo -e '\n[!] Script aborted by user.'; exit 1" INT
 
+mkdir -p "$TEST_DIR"
 MARKER=".completed"
 rm -f "${TEST_DIR}/$MARKER"
 
