@@ -113,7 +113,7 @@ for core in "${CORES[@]}"; do
 
             # Compile MAP_EXPLORER once for correct number of combinations
             source ${PSW_M2ISAR_PERF}/venv/bin/activate
-            python ${PSW_M2ISAR_PERF}/m2isar_perf/run.py "${PSW_CORE_PERF_DSL}/${core^^}_DSE.corePerfDsl" -b "${BLOCK_LIST_DIR}/${core^^}_DSE_CRC32_BlockList.json" "-t1=${T1}" "-t2=${T2}" "-t3=${T3}"
+            python3.10 ${PSW_M2ISAR_PERF}/m2isar_perf/run.py "${PSW_CORE_PERF_DSL}/${core^^}_DSE.corePerfDsl" -b "${BLOCK_LIST_DIR}/${core^^}_DSE_CRC32_BlockList.json" "-t1=${T1}" "-t2=${T2}" "-t3=${T3}"
             cp ${SRC_DIR}/include/* ${VAR_DIR}/include
             cp -r ${SRC_DIR}/src/* ${VAR_DIR}/src
             ${PSW_PERF_SIM}/rebuild.sh
@@ -125,7 +125,7 @@ for core in "${CORES[@]}"; do
                 echo "Running MAP-Explorer simulations for ${core} ${run} ${mode} ${bm}"
                 source ${PSW_M2ISAR_PERF}/venv/bin/activate
                 echo " >> M2ISAR-Perf"
-                python ${PSW_M2ISAR_PERF}/m2isar_perf/run.py "${PSW_CORE_PERF_DSL}/${core^^}_DSE.corePerfDsl" -b "${BLOCK_LIST_DIR}/${core^^}_DSE_${bm^^}${run_key^^}_BlockList.json" "-t1=${T1}" "-t2=${T2}" "-t3=${T3}" > "$target_dir/DUMP_M2ISAR-Perf_${mode}.txt"
+                python3.10 ${PSW_M2ISAR_PERF}/m2isar_perf/run.py "${PSW_CORE_PERF_DSL}/${core^^}_DSE.corePerfDsl" -b "${BLOCK_LIST_DIR}/${core^^}_DSE_${bm^^}${run_key^^}_BlockList.json" "-t1=${T1}" "-t2=${T2}" "-t3=${T3}" > "$target_dir/DUMP_M2ISAR-Perf_${mode}.txt"
                 cp -r ${SRC_DIR}/src/block_schedules/* ${VAR_DIR}/src/block_schedules
                 echo " >> Compiler"
                 ${PSW_PERF_SIM}/rebuild.sh > "$target_dir/DUMP_Compile_${mode}.txt"
