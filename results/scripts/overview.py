@@ -28,7 +28,12 @@ readoutDict = {
         'time_unit': "s",
         'time_factor': 1.0
         },
-    'Compile': {
+    'Compile_single': {
+        'time_key': "Done rebuilding ETISS-PerfSim. Time spend:",
+        'time_unit': "ms",
+        'time_factor': 1000.0
+        },
+    'Compile_full': {
         'time_key': "Done rebuilding ETISS-PerfSim. Time spend:",
         'time_unit': "ms",
         'time_factor': 1000.0
@@ -38,7 +43,12 @@ readoutDict = {
         'time_unit': "s",
         'time_factor': 1.0
         },
-    'M2ISAR-Perf': {
+    'M2ISAR-Perf_single': {
+        'time_key': "Total execution time M2ISAR-Perf:",
+        'time_unit': "s",
+        'time_factor': 1.0
+        },
+    'M2ISAR-Perf_full': {
         'time_key': "Total execution time M2ISAR-Perf:",
         'time_unit': "s",
         'time_factor': 1.0
@@ -53,7 +63,12 @@ readoutDict = {
         'time_unit': "s",
         'time_factor': 1.0
         },
-    'MAPExplorer_void': {
+    'MAPExplorer_void_single': {
+        'time_key': "Total execution time:",
+        'time_unit': "s",
+        'time_factor': 1.0
+        },
+    'MAPExplorer_void_full': {
         'time_key': "Total execution time:",
         'time_unit': "s",
         'time_factor': 1.0
@@ -74,14 +89,19 @@ readoutDict = {
 
 timingResults = {
     'BlockExt': [], 
-    'Compile': [],
-    'M2ISAR-Perf': [],
-    'M2ISAR-Perf_Matrix-Gen': [],
-    'M2ISAR-Perf_Matrix-Opt': [],
+    'Compile_single': [],
+    'Compile_full': [],
+    'M2ISAR-Perf_single': [],
+    'M2ISAR-Perf_single_Matrix-Gen': [],
+    'M2ISAR-Perf_single_Matrix-Opt': [],
+    'M2ISAR-Perf_full': [],
+    'M2ISAR-Perf_full_Matrix-Gen': [],
+    'M2ISAR-Perf_full_Matrix-Opt': [],
     'ETISS': [],
     'MAPExplorer_single': [],
     'MAPExplorer_full': [],
-    'MAPExplorer_void': [],
+    'MAPExplorer_void_single': [],
+    'MAPExplorer_void_full': [],
     'PerfSim': [],
     'PerfSim_void': []
 }
@@ -100,6 +120,7 @@ dirPath = Path(__file__).resolve().parent
 
 benchmarkVariant = dirPath.name
 core = dirPath.parent.name
+testName = dirPath.parent.parent.name
 
 subDirs = [p for p in dirPath.iterdir() if p.is_dir()]
 subDirs.sort(key=lambda x: x.name)
@@ -129,7 +150,7 @@ for subDir_i in subDirs:
             raise RuntimeError(f"Failed to find execution time in {dump_i.name}")
         
         # Read out sub-timings for M2ISAR-Perf
-        if dumpName == "M2ISAR-Perf":
+        if dumpName.startswith("M2ISAR-Perf"):
             subs = ['Matrix-Gen', 'Matrix-Opt']
             for s in subs:
                 keyString = f"{s} Time:"
@@ -199,7 +220,7 @@ if len(ccResults['MAPExplorer_single']) > 0:
     report += "\n" + res +"\n"
     print(res)
 
-    repFile = dirPath / "ccTest.txt"
+    repFile = dirPath / f"ccTest_{testName}_{core}_{benchmarkVariant}.txt"
     with repFile.open('w') as f:
         f.write(report)
 
@@ -208,52 +229,78 @@ else:
 
 ################################ SETUP TIMES ################################
 
-m2isar_base = [full - (gen + opt) for full, gen, opt in zip(timingResults['M2ISAR-Perf'], timingResults['M2ISAR-Perf_Matrix-Gen'], timingResults['M2ISAR-Perf_Matrix-Opt'],)]
+width = 0.35
 x = list(range(len(benchmarks)))
 
-width = 0.35
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(max(8, len(benchmarks) * 1.2), 10), sharex=True)
+fig.suptitle(f"{testName} | {core.upper()} | {benchmarkVariant}", fontsize=12)
 
-fig, ax = plt.subplots(figsize=(max(8, len(benchmarks) * 1.2), 6))
-fig.suptitle(f"{core.upper()} | {benchmarkVariant}", fontsize=12)
+if len(timingResults['M2ISAR-Perf_single']) > 0:
+    m2isarKey = 'M2ISAR-Perf_single'
+    m2isar_matGen = timingResults[m2isarKey + '_Matrix-Gen']
+    m2isar_matOpt = timingResults[m2isarKey + '_Matrix-Opt']
+    m2isar_base = [full - (gen + opt) for full, gen, opt in zip(timingResults[m2isarKey], m2isar_matGen, m2isar_matOpt)]
+    comp = timingResults['Compile_single']
 
-ax.bar(x, timingResults['BlockExt'], width=width, label='BlockExt', color='#C44E52')
-ax.bar(x, m2isar_base, width=width, bottom=timingResults['BlockExt'], label='M2ISAR: Base', color='#4C72B0')
-b = [e + m for e, m in zip(timingResults['BlockExt'], m2isar_base)]
-ax.bar(x, timingResults['M2ISAR-Perf_Matrix-Gen'], width=width, bottom=b, label='M2ISAR: Matrix-Gen', color='#55A868')
-b = [i + g for i, g in zip(b, timingResults['M2ISAR-Perf_Matrix-Gen'])]
-ax.bar(x, timingResults['M2ISAR-Perf_Matrix-Opt'], width=width, bottom=b, label='M2ISAR: Matrix-Opt', color="#B0744C")
-b = [i + o for i, o in zip(b, timingResults['M2ISAR-Perf_Matrix-Opt'])]
-ax.bar(x, timingResults['Compile'], width=width, bottom=b, label='Compiler', color="#B04C9F")
+    ax1.bar(x, timingResults['BlockExt'], width=width, label='BlockExt', color='#C44E52')
+    ax1.bar(x, m2isar_base, width=width, bottom=timingResults['BlockExt'], label='M2ISAR: Base', color='#4C72B0')
+    b = [e + m for e, m in zip(timingResults['BlockExt'], m2isar_base)]
+    ax1.bar(x, m2isar_matGen, width=width, bottom=b, label='M2ISAR: Matrix-Gen', color='#55A868')
+    b = [i + g for i, g in zip(b, m2isar_matOpt)]
+    ax1.bar(x, m2isar_matOpt, width=width, bottom=b, label='M2ISAR: Matrix-Opt', color="#B0744C")
+    b = [i + o for i, o in zip(b, m2isar_matOpt)]
+    ax1.bar(x, comp, width=width, bottom=b, label='Compiler', color="#B04C9F")
 
-ax.set_xticks(x)
-ax.set_xticklabels(benchmarks, rotation=45, ha='right')
-ax.set_ylabel('Time (s)')
-ax.set_title('Setup Times')
-ax.legend()
-ax.grid(axis='y', linestyle='--', alpha=0.5)
+    ax1.set_xticks(x)
+    ax1.set_xticklabels(benchmarks, rotation=45, ha='right')
+    ax1.set_ylabel('Time (s)')
+    ax1.set_title('Setup Times (single variant)')
+    ax1.legend()
+    ax1.grid(axis='y', linestyle='--', alpha=0.5)
+
+if len(timingResults['M2ISAR-Perf_full']) > 0:
+    m2isarKey = 'M2ISAR-Perf_full'
+    m2isar_matGen = timingResults[m2isarKey + '_Matrix-Gen']
+    m2isar_matOpt = timingResults[m2isarKey + '_Matrix-Opt']
+    m2isar_base = [full - (gen + opt) for full, gen, opt in zip(timingResults[m2isarKey], m2isar_matGen, m2isar_matOpt)]
+    comp = timingResults['Compile_full']
+
+    ax2.bar(x, timingResults['BlockExt'], width=width, label='BlockExt', color='#C44E52')
+    ax2.bar(x, m2isar_base, width=width, bottom=timingResults['BlockExt'], label='M2ISAR: Base', color='#4C72B0')
+    b = [e + m for e, m in zip(timingResults['BlockExt'], m2isar_base)]
+    ax2.bar(x, m2isar_matGen, width=width, bottom=b, label='M2ISAR: Matrix-Gen', color='#55A868')
+    b = [i + g for i, g in zip(b, m2isar_matOpt)]
+    ax2.bar(x, m2isar_matOpt, width=width, bottom=b, label='M2ISAR: Matrix-Opt', color="#B0744C")
+    b = [i + o for i, o in zip(b, m2isar_matOpt)]
+    ax2.bar(x, comp, width=width, bottom=b, label='Compiler', color="#B04C9F")
+
+    ax2.set_ylabel('Time (s)')
+    ax2.set_title(f'Setup Times ({numVariants} variants)')
+    ax2.legend()
+    ax2.grid(axis='y', linestyle='--', alpha=0.5)
+
 plt.tight_layout(rect=[0, 0, 1, 0.96])
-plt.savefig(dirPath / 'setupTimes.png')
+plt.savefig(dirPath / f"setupTimes_{testName}_{core}_{benchmarkVariant}.png")
 #plt.show()
 
 ################################ SIMULATION TIMES (single) ################################
 
 if len(timingResults['MAPExplorer_single']) > 0:
 
-    selected_tests = ['PerfSim', 'MAPExplorer']
+    selected_tests = ['PerfSim', 'MAPExplorer_single']
     width = 0.2
     x = list(range(len(benchmarks)))
 
     fig2, (ax1, ax2) = plt.subplots(2, 1, figsize=(max(8, len(benchmarks) * 1.2), 10), sharex=True)
-    fig2.suptitle(f"{core.upper()} | {benchmarkVariant}", fontsize=12)
+    fig2.suptitle(f"{testName} | {core.upper()} | {benchmarkVariant}", fontsize=12)
 
     for i, test_i in enumerate(selected_tests):
         offsets = [(xi + (i - 1) * (width + 0.05)) for xi in x]
         ax1.bar(offsets, timingResults['ETISS'], width=width, label='ETISS' if i == 0 else None, color='#C44E52')
-        voidKey = test_i + "_void"
+        voidKey = test_i + "_void" if (test_i == 'PerfSim') else 'MAPExplorer_void_single'
         voidTime = [v - e for v,e in zip(timingResults[voidKey], timingResults['ETISS'])]
         ax1.bar(offsets, voidTime, width=width, bottom=timingResults['ETISS'], label=f"{test_i}: Setup + Trace")
-        simKey = test_i if(test_i == "PerfSim") else (test_i + "_single")
-        compTime = [s - v for s,v in zip(timingResults[simKey], timingResults[voidKey])]
+        compTime = [s - v for s,v in zip(timingResults[test_i], timingResults[voidKey])]
         ax1.bar(offsets, compTime, width=width, bottom=timingResults[voidKey], label=f"{test_i}: Computation")
 
     ax1.set_xticks(x)
@@ -265,9 +312,8 @@ if len(timingResults['MAPExplorer_single']) > 0:
 
     for i, test_i in enumerate(selected_tests):
         offsets = [(xi + (i - 1) * (width + (width/4))) for xi in x]
-        voidKey = test_i + "_void"
-        simKey = test_i if(test_i == "PerfSim") else (test_i + "_single")
-        compTime = [c - v for c,v in zip(timingResults[simKey], timingResults[voidKey])]
+        voidKey = test_i + "_void" if (test_i == 'PerfSim') else 'MAPExplorer_void_single'
+        compTime = [c - v for c,v in zip(timingResults[test_i], timingResults[voidKey])]
         ax2.bar(offsets, compTime, width=width, label=f"{test_i}: Computation")
 
     ax2.set_ylabel('Time (s)')
@@ -276,7 +322,7 @@ if len(timingResults['MAPExplorer_single']) > 0:
     ax2.grid(axis='y', linestyle='--', alpha=0.5)
 
     plt.tight_layout(rect=[0, 0, 1, 0.96])
-    plt.savefig(dirPath / 'simTimes_single.png')
+    plt.savefig(dirPath / f"simTimes_single_{testName}_{core}_{benchmarkVariant}.png")
     #plt.show()
 
 ################################ OVERVIEW TABLE ################################
@@ -310,7 +356,7 @@ if len(timingResults['MAPExplorer_full']) > 0:
         rows += f"{perfSim_simTime} & {expTime} & {perfSim_mips} &"
 
         simTime = round(timingResults['MAPExplorer_full'][i], 2)
-        setupTime = round(timingResults['BlockExt'][i] + timingResults['M2ISAR-Perf'][i] + timingResults['Compile'][i], 2)
+        setupTime = round(timingResults['BlockExt'][i] + timingResults['M2ISAR-Perf_full'][i] + timingResults['Compile_full'][i], 2)
         totalTime = round(simTime + setupTime, 2)
         mips = round(((n*numVariants) / 1000000) / totalTime, 2)
         delta = round(expTime - totalTime, 2)
@@ -337,13 +383,13 @@ if len(timingResults['MAPExplorer_full']) > 0:
     total_row += f"Total & {numInstr_tot} &"
 
     perfSim_mips_tot = round(((numInstr_tot*numVariants) / 1000000) / expTime_tot, 2)
-    total_row += f"{perfSim_simTime_tot} & {expTime_tot} & {perfSim_mips_tot} &"
+    total_row += f"{round(perfSim_simTime_tot,2)} & {round(expTime_tot,2)} & {perfSim_mips_tot} &"
 
     simTime_tot = round(simTime_tot, 2)
     mips_tot = round(((numInstr_tot*numVariants) / 1000000) / totalTime_tot, 2)
     delta_tot = round(expTime_tot - totalTime_tot, 2)
     speedUp_tot = round((expTime_tot / totalTime_tot), 2)
-    total_row += f"{round(setupTime_tot,2)} & {simTime_tot} & {totalTime_tot} & {mips_tot} & {delta_tot} & {speedUp_tot}x \\\\\n"
+    total_row += f"{round(setupTime_tot,2)} & {round(simTime_tot,2)} & {round(totalTime_tot,2)} & {mips_tot} & {delta_tot} & {speedUp_tot}x \\\\\n"
 
     # Make "Avg." row
     avg_row = ""
@@ -378,7 +424,7 @@ if len(timingResults['MAPExplorer_full']) > 0:
 
     \begin{{table}}[ht]
     \centering
-    \caption{{Overview: {core.upper()}, {benchmarkVariant}, Variants: {numVariants}}}
+    \caption{{Results: {testName}, {core.upper()}, {benchmarkVariant}, Variants: {numVariants}}}
     \centering
     \begin{{tabular}}{{c | c | c c c | c c c c c c}}
     \hline
@@ -398,7 +444,7 @@ if len(timingResults['MAPExplorer_full']) > 0:
     \end{{document}}
     """
 
-    texFile = dirPath / "overview.tex"
+    texFile = dirPath / f"results_{testName}_{core}_{benchmarkVariant}.tex"
     texFile.write_text(tableContent)
 
     os.system("pdflatex -output-directory=" + str(dirPath) + " " + str(texFile))    
