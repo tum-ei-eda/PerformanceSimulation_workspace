@@ -35,10 +35,11 @@ BLOCK_LIST_DIR=${PSW_WORKSPACE}/BLOCK_LISTS
 
 echo $BLOCK_LIST_DIR
 
-#CORES=("cv32e40p" "cva6")
-CORES=("cv32e40p")
-#RUNS=("" "_long")
-RUNS=("")
+CORES=("cv32e40p" "cva6")
+#CORES=("cv32e40p")
+#CORES=("cva6")
+RUNS=("" "_long")
+#RUNS=("")
 
 trap "echo -e '\n[!] Script aborted by user.'; exit 1" INT
 
@@ -58,17 +59,23 @@ for core in "${CORES[@]}"; do
     ${PSW_PERF_SIM}/rebuild.sh
 
     for run in "${RUNS[@]}"; do
+
+        if [[ "$run" == "_long" ]]; then
+            run_name="long"
+        else
+            run_name="short"
+        fi
+
+        # Copy overview script to run_dir
+        run_dir=${TEST_DIR}/${core}/${run_name}
+        mkdir -p "$run_dir"
+        cp ${PSW_RESULTS}/scripts/overview.py ${run_dir}
+
         for bm in "${PSW_EMBENCH[@]}"; do
 
-            if [[ "$run" == "_long" ]]; then
-                run_name="long"
-            else
-                run_name="short"
-            fi
+            echo "Running MAPExplorer ${MODE} for ${core} ${run_name} ${bm}"
 
-            echo "Running PerfSim for ${core} ${run_name} ${bm}"
-
-            target_dir=$TEST_DIR/$core/$run_name/$bm 
+            target_dir=${run_dir}/${bm} 
             mkdir -p "$target_dir"
 
             # Copy information from base to current test dir
@@ -79,7 +86,7 @@ for core in "${CORES[@]}"; do
             #cp ${SRC_DIR}/include/* ${TARGET_DIR}/include
             cp -r ${SRC_DIR}/src/block_schedules/* ${TARGET_DIR}/src/block_schedules
             ${PSW_PERF_SIM}/rebuild.sh > "$target_dir/DUMP_Compile.txt"
-            "${PSW_SCRIPTS_SUPPORT}/run_helper.py" "em:${bm}${run}" --core "${core}" > "$target_dir/DUMP_MAPExplorer_${MODE}.txt"
+            "${PSW_SCRIPTS_SUPPORT}/run_helper.py" "em:${bm}${run}" --core "${core}" -map > "$target_dir/DUMP_MAPExplorer_${MODE}.txt"
 
         done # for bm
     done # for len

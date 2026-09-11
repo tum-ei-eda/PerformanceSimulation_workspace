@@ -6,7 +6,8 @@ set -e
 
 TEST_DIR=${PSW_RESULTS_BASE}
 
-CORES=("cv32e40p" "cva6")
+#CORES=("cv32e40p" "cva6")
+CORES=("cva6")
 RUNS=("" "_long")
 #RUNS=("")
 
@@ -27,6 +28,7 @@ for core in "${CORES[@]}"; do
             target_dir=$TEST_DIR/$core/$run_name/$bm 
             mkdir -p "$target_dir"
 
+            #"${PSW_SCRIPTS_SUPPORT}/run_helper.py" "em:${bm}${run}" --core "${core}" > "$target_dir/DUMP_PerfSim.txt"
             "${PSW_SCRIPTS_SUPPORT}/run_helper.py" "em:${bm}${run}" --core "${core}" > "$target_dir/DUMP_PerfSim.txt"
 
         done # for bm

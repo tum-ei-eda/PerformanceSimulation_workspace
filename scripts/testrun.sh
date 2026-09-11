@@ -13,10 +13,16 @@ elif [[ "$1" == "single" ]]; then
 elif [[ "$1" == "full" ]]; then
     echo "Missing test-name argument (must be first argument)"
     exit 1
+elif [[ "$1" == "fullfull" ]]; then
+    echo "Missing test-name argument (must be first argument)"
+    exit 1
 elif [[ "$1" == "long" ]]; then
     echo "Missing test-name argument (must be first argument)"
     exit 1
 elif [[ "$1" == "short" ]]; then
+    echo "Missing test-name argument (must be first argument)"
+    exit 1
+elif [[ "$1" == "typ" ]]; then
     echo "Missing test-name argument (must be first argument)"
     exit 1
 else
@@ -26,8 +32,8 @@ fi
 
 MODES=()
 RUNS=()
-#CORES=("cv32e40p" "cva6")
-CORES=("cv32e40p")
+CORES=("cv32e40p" "cva6")
+#CORES=("cva6")
 while [ "$#" -gt 0 ];
 do
     arg="$1"
@@ -35,10 +41,14 @@ do
         MODES+=("single")
     elif [ "$arg" == "full" ]; then
         MODES+=("full")
+    elif [ "$arg" == "fullfull" ]; then
+        MODES+=("fullfull")
     elif [ "$arg" == "long" ]; then
         RUNS+=("long")
     elif [ "$arg" == "short" ]; then
         RUNS+=("short")
+    elif [ "$arg" == "typ" ]; then
+        RUNS+=("typ")
     else
         echo "Unknown test argument"
         exit 1
@@ -58,7 +68,7 @@ rm -f "${TEST_DIR}/$MARKER"
 for core in "${CORES[@]}"; do
 
     SRC_DIR=${PSW_M2ISAR_PERF}/out/${core^^}_DSE/code/block_sched/${core^^}_DSE
-    VAR_DIR=${PSW_SWEVAL_LIB}/libs/backends/variants/${core^^}_DSE/
+    VAR_DIR=${PSW_SWEVAL_LIB}/libs/backends/variants/${core^^}_DSE
 
     for run in "${RUNS[@]}"; do
 
@@ -66,6 +76,8 @@ for core in "${CORES[@]}"; do
             run_key="_long"
         elif [[ "$run" == "short" ]]; then
             run_key=""
+        elif [[ "$run" == "typ" ]]; then
+            run_key="_typ"
         else
             echo "Unexpected run"
             exit 1
@@ -86,6 +98,7 @@ for core in "${CORES[@]}"; do
 
             echo " >> Block-Extractor"
             "${PSW_SCRIPTS_SUPPORT}/run_helper.py" "em:${bm}${run_key}" --core "${core}" -bext > "$target_dir/DUMP_BlockExt.txt"
+            mv "./${core^^}_DSE_BlockList.json" "${BLOCK_LIST_DIR}/${core^^}_DSE_${bm^^}${run_key^^}_BlockList.json"
             echo " >> ETISS"
             "${PSW_SCRIPTS_SUPPORT}/run_helper.py" "em:${bm}${run_key}" --core "${core}" -np > "$target_dir/DUMP_ETISS.txt"
             echo " >> PerfSim"
@@ -99,13 +112,17 @@ for core in "${CORES[@]}"; do
         for mode in "${MODES[@]}"; do
 
             if [[ "$mode" == "single" ]]; then
-                T1=0
-                T2=0
-                T3=0
+                VI=1
+                VD=1
+                VB=1
             elif [[ "$mode" == "full" ]]; then
-                T1=4
-                T2=4
-                T3=3
+                VI=16
+                VD=16
+                VB=8
+            elif [[ "$mode" == "fullfull" ]]; then
+                VI=32
+                VD=32
+                VB=16
             else
                 echo "NO VALID MODE SPECIFIED FOR MAP_EXPLORER TEST"
                 exit 1
@@ -113,7 +130,7 @@ for core in "${CORES[@]}"; do
 
             # Compile MAP_EXPLORER once for correct number of combinations
             source ${PSW_M2ISAR_PERF}/venv/bin/activate
-            python3.10 ${PSW_M2ISAR_PERF}/m2isar_perf/run.py "${PSW_CORE_PERF_DSL}/${core^^}_DSE.corePerfDsl" -b "${BLOCK_LIST_DIR}/${core^^}_DSE_CRC32_BlockList.json" "-t1=${T1}" "-t2=${T2}" "-t3=${T3}"
+            python3.10 ${PSW_M2ISAR_PERF}/m2isar_perf/run.py "${PSW_CORE_PERF_DSL}/${core^^}_DSE.corePerfDsl" -b "${BLOCK_LIST_DIR}/${core^^}_DSE_CRC32_BlockList.json" "-vi=${VI}" "-vd=${VD}" "-vb=${VB}"
             cp ${SRC_DIR}/include/* ${VAR_DIR}/include
             cp -r ${SRC_DIR}/src/* ${VAR_DIR}/src
             ${PSW_PERF_SIM}/rebuild.sh
@@ -125,7 +142,8 @@ for core in "${CORES[@]}"; do
                 echo "Running MAP-Explorer simulations for ${core} ${run} ${mode} ${bm}"
                 source ${PSW_M2ISAR_PERF}/venv/bin/activate
                 echo " >> M2ISAR-Perf"
-                python3.10 ${PSW_M2ISAR_PERF}/m2isar_perf/run.py "${PSW_CORE_PERF_DSL}/${core^^}_DSE.corePerfDsl" -b "${BLOCK_LIST_DIR}/${core^^}_DSE_${bm^^}${run_key^^}_BlockList.json" "-t1=${T1}" "-t2=${T2}" "-t3=${T3}" > "$target_dir/DUMP_M2ISAR-Perf_${mode}.txt"
+                rm ${VAR_DIR}/src/block_schedules/*
+                python3.10 ${PSW_M2ISAR_PERF}/m2isar_perf/run.py "${PSW_CORE_PERF_DSL}/${core^^}_DSE.corePerfDsl" -b "${BLOCK_LIST_DIR}/${core^^}_DSE_${bm^^}${run_key^^}_BlockList.json" "-vi=${VI}" "-vd=${VD}" "-vb=${VB}" > "$target_dir/DUMP_M2ISAR-Perf_${mode}.txt"
                 cp -r ${SRC_DIR}/src/block_schedules/* ${VAR_DIR}/src/block_schedules
                 echo " >> Compiler"
                 ${PSW_PERF_SIM}/rebuild.sh > "$target_dir/DUMP_Compile_${mode}.txt"
@@ -133,6 +151,8 @@ for core in "${CORES[@]}"; do
                 "${PSW_SCRIPTS_SUPPORT}/run_helper.py" "em:${bm}${run_key}" --core "${core}" -map > "$target_dir/DUMP_MAPExplorer_${mode}.txt"
                 echo " >> MAPExplorer (void)"
                 "${PSW_SCRIPTS_SUPPORT}/run_helper.py" "em:${bm}${run_key}" --core "${core}" -map -v > "$target_dir/DUMP_MAPExplorer_void_${mode}.txt"
+                echo " >> MAPExplorer (instruction_scheduling)"
+                "${PSW_SCRIPTS_SUPPORT}/run_helper.py" "em:${bm}${run_key}" --core "${core}" -map -isched > "$target_dir/DUMP_MAPExplorer_isched_${mode}.txt"
 
             done # bm
         done # mode

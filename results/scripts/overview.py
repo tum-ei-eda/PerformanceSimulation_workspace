@@ -38,6 +38,11 @@ readoutDict = {
         'time_unit': "ms",
         'time_factor': 1000.0
         },
+    'Compile_fullfull': {
+        'time_key': "Done rebuilding ETISS-PerfSim. Time spend:",
+        'time_unit': "ms",
+        'time_factor': 1000.0
+        },
     'ETISS': {
         'time_key': "Total execution time:",
         'time_unit': "s",
@@ -53,6 +58,11 @@ readoutDict = {
         'time_unit': "s",
         'time_factor': 1.0
         },
+    'M2ISAR-Perf_fullfull': {
+        'time_key': "Total execution time M2ISAR-Perf:",
+        'time_unit': "s",
+        'time_factor': 1.0
+        },
     'MAPExplorer_single': {
         'time_key': "Total execution time:",
         'time_unit': "s",
@@ -63,12 +73,37 @@ readoutDict = {
         'time_unit': "s",
         'time_factor': 1.0
         },
+    'MAPExplorer_fullfull': {
+        'time_key': "Total execution time:",
+        'time_unit': "s",
+        'time_factor': 1.0
+        },
     'MAPExplorer_void_single': {
         'time_key': "Total execution time:",
         'time_unit': "s",
         'time_factor': 1.0
         },
     'MAPExplorer_void_full': {
+        'time_key': "Total execution time:",
+        'time_unit': "s",
+        'time_factor': 1.0
+        },
+    'MAPExplorer_void_fullfull': {
+        'time_key': "Total execution time:",
+        'time_unit': "s",
+        'time_factor': 1.0
+        },
+    'MAPExplorer_isched_single': {
+        'time_key': "Total execution time:",
+        'time_unit': "s",
+        'time_factor': 1.0
+        },
+    'MAPExplorer_isched_full': {
+        'time_key': "Total execution time:",
+        'time_unit': "s",
+        'time_factor': 1.0
+        },
+    'MAPExplorer_isched_fullfull': {
         'time_key': "Total execution time:",
         'time_unit': "s",
         'time_factor': 1.0
@@ -91,28 +126,41 @@ timingResults = {
     'BlockExt': [], 
     'Compile_single': [],
     'Compile_full': [],
+    'Compile_fullfull': [],
     'M2ISAR-Perf_single': [],
     'M2ISAR-Perf_single_Matrix-Gen': [],
     'M2ISAR-Perf_single_Matrix-Opt': [],
     'M2ISAR-Perf_full': [],
     'M2ISAR-Perf_full_Matrix-Gen': [],
     'M2ISAR-Perf_full_Matrix-Opt': [],
+    'M2ISAR-Perf_fullfull': [],
+    'M2ISAR-Perf_fullfull_Matrix-Gen': [],
+    'M2ISAR-Perf_fullfull_Matrix-Opt': [],
     'ETISS': [],
     'MAPExplorer_single': [],
     'MAPExplorer_full': [],
+    'MAPExplorer_fullfull': [],
     'MAPExplorer_void_single': [],
     'MAPExplorer_void_full': [],
+    'MAPExplorer_void_fullfull': [],
+    'MAPExplorer_isched_single': [],
+    'MAPExplorer_isched_full': [],
+    'MAPExplorer_isched_fullfull': [],
     'PerfSim': [],
     'PerfSim_void': []
 }
 
 ccResults = {
     'MAPExplorer_single': [],
+    'MAPExplorer_isched_single': [],
     'PerfSim': []
 }
 
 numInstr = []
-numVariants = None
+numVariants = {
+    'full': None,
+    'fullfull': None
+}
 
 ################################ FILE READOUT ################################
 
@@ -176,7 +224,7 @@ for subDir_i in subDirs:
             if match:
                 numInstr.append(int(match.group(1)))
             else:
-                raise RuntimeError(f"Failed to find CC estimate in {dump_i.name}")
+                raise RuntimeError(f"Failed to find number of instructions in {dump_i.name}")
             
         # Read out CC-estimate for single MAP_Explorer run
         if dumpName == "MAPExplorer_single":
@@ -186,7 +234,15 @@ for subDir_i in subDirs:
                 ccResults[dumpName].append(int(match.group(1)))
             else:
                 raise RuntimeError(f"Failed to find CC estimate in {dump_i.name}")
-            
+
+        if dumpName == "MAPExplorer_isched_single":
+            keyString = "Estimated cycles (Comb_0):"
+            match = re.search(rf"{re.escape(keyString)}\s*([0-9]*\.?[0-9]+)", text)
+            if match:
+                ccResults[dumpName].append(int(match.group(1)))
+            else:
+                raise RuntimeError(f"Failed to find CC estimate in {dump_i.name}")
+
         # Read out number of variants if full sim present
         if dumpName == "MAPExplorer_full":
             numVar = 0
@@ -196,36 +252,77 @@ for subDir_i in subDirs:
                     if match:
                         numVar = max(numVar, (int(match.group(1))+1))
             
-            if numVariants is None:
-                numVariants = numVar
-            elif (numVariants != numVar):
-                raise RuntimeError(f"Mismatching number of variants ({numVariants} vs. {numVar}) for {subDir_i.name}")
+            if numVariants['full'] is None:
+                numVariants['full'] = numVar
+            elif (numVariants['full'] != numVar):
+                raise RuntimeError(f"Mismatching number of variants ({numVariants['full']} vs. {numVar}) for {subDir_i.name}")
         
+        # Read out number of variants if full sim present
+        if dumpName == "MAPExplorer_fullfull":
+            numVar = 0
+            with dump_i.open('r') as f:
+                for line in f:
+                    match = re.search(r'Comb_(\d+)', line)
+                    if match:
+                        numVar = max(numVar, (int(match.group(1))+1))
+            
+            if numVariants['fullfull'] is None:
+                numVariants['fullfull'] = numVar
+            elif (numVariants['fullfull'] != numVar):
+                raise RuntimeError(f"Mismatching number of variants ({numVariants['fullfull']} vs. {numVar}) for {subDir_i.name}")
             
 ################################ CC-Correctness Test ################################
 
-if len(ccResults['MAPExplorer_single']) > 0:
+selectedTests = ['MAPExplorer_single', 'MAPExplorer_isched_single']
 
-    testPassed = True
-    report = ""
-    for i, (cc_map, cc_perf) in enumerate(zip(ccResults['MAPExplorer_single'], ccResults['PerfSim'])):
-        report += f"{benchmarks[i]} >> MAPExplorer: {cc_map} | PerfSim: {cc_perf}"
-        if cc_map != cc_perf:
-            report += " >> FAILED\n"
-            testPassed = False
-        else:
-            report += " >> passed\n"
+for test_i in selectedTests:
+
+    if len(ccResults[test_i]) > 0:
     
-    res = f"CC-Correctness Test: {'passed' if testPassed else 'FAILED'}"
-    report += "\n" + res +"\n"
-    print(res)
+        testPassed = True
+        report = ""
+        for i, (cc_map, cc_perf) in enumerate(zip(ccResults[test_i], ccResults['PerfSim'])):
+            report += f"{benchmarks[i]} >> MAPExplorer: {cc_map} | PerfSim: {cc_perf}"
+            if cc_map != cc_perf:
+                report += " >> FAILED\n"
+                testPassed = False
+            else:
+                report += " >> passed\n"
+        
+        res = f"CC-Correctness Test ({test_i}): {'passed' if testPassed else 'FAILED'}"
+        report += "\n" + res +"\n"
+        print(res)
+    
+        repFile = dirPath / f"ccTest_{test_i}_{testName}_{core}_{benchmarkVariant}.txt"
+        with repFile.open('w') as f:
+            f.write(report)
+    
+    else:
+        print(f"CC-Correctness test for {test_i}: skipped")
 
-    repFile = dirPath / f"ccTest_{testName}_{core}_{benchmarkVariant}.txt"
-    with repFile.open('w') as f:
-        f.write(report)
 
-else:
-    print("CC-Correctness Test: skipped")
+#if len(ccResults['MAPExplorer_single']) > 0:
+#
+#    testPassed = True
+#    report = ""
+#    for i, (cc_map, cc_perf) in enumerate(zip(ccResults['MAPExplorer_single'], ccResults['PerfSim'])):
+#        report += f"{benchmarks[i]} >> MAPExplorer: {cc_map} | PerfSim: {cc_perf}"
+#        if cc_map != cc_perf:
+#            report += " >> FAILED\n"
+#            testPassed = False
+#        else:
+#            report += " >> passed\n"
+#    
+#    res = f"CC-Correctness Test: {'passed' if testPassed else 'FAILED'}"
+#    report += "\n" + res +"\n"
+#    print(res)
+#
+#    repFile = dirPath / f"ccTest_{testName}_{core}_{benchmarkVariant}.txt"
+#    with repFile.open('w') as f:
+#        f.write(report)
+#
+#else:
+#    print("CC-Correctness Test skipped")
 
 ################################ SETUP TIMES ################################
 
@@ -275,7 +372,7 @@ if len(timingResults['M2ISAR-Perf_full']) > 0:
     ax2.bar(x, comp, width=width, bottom=b, label='Compiler', color="#B04C9F")
 
     ax2.set_ylabel('Time (s)')
-    ax2.set_title(f'Setup Times ({numVariants} variants)')
+    ax2.set_title(f'Setup Times ({numVariants["full"]} variants)')
     ax2.legend()
     ax2.grid(axis='y', linestyle='--', alpha=0.5)
 
@@ -288,6 +385,9 @@ plt.savefig(dirPath / f"setupTimes_{testName}_{core}_{benchmarkVariant}.png")
 if len(timingResults['MAPExplorer_single']) > 0:
 
     selected_tests = ['PerfSim', 'MAPExplorer_single']
+    if len(timingResults['MAPExplorer_isched_single']) > 0:
+        selected_tests.append('MAPExplorer_isched_single')
+
     width = 0.2
     x = list(range(len(benchmarks)))
 
@@ -299,7 +399,7 @@ if len(timingResults['MAPExplorer_single']) > 0:
         ax1.bar(offsets, timingResults['ETISS'], width=width, label='ETISS' if i == 0 else None, color='#C44E52')
         voidKey = test_i + "_void" if (test_i == 'PerfSim') else 'MAPExplorer_void_single'
         voidTime = [v - e for v,e in zip(timingResults[voidKey], timingResults['ETISS'])]
-        ax1.bar(offsets, voidTime, width=width, bottom=timingResults['ETISS'], label=f"{test_i}: Setup + Trace")
+        ax1.bar(offsets, voidTime, width=width, bottom=timingResults['ETISS'], label= None if (test_i == 'MAPExplorer_isched_single') else f"{test_i}: Setup + Trace", color = "#0519C7" if (test_i == 'PerfSim') else "#15C705")
         compTime = [s - v for s,v in zip(timingResults[test_i], timingResults[voidKey])]
         ax1.bar(offsets, compTime, width=width, bottom=timingResults[voidKey], label=f"{test_i}: Computation")
 
@@ -327,124 +427,187 @@ if len(timingResults['MAPExplorer_single']) > 0:
 
 ################################ OVERVIEW TABLE ################################
 
-if len(timingResults['MAPExplorer_full']) > 0:
+selected_tests = ['full', 'fullfull']
 
-    # Total counts
-    numInstr_tot = 0
-    perfSim_simTime_tot = 0
-    expTime_tot = 0
-    simTime_tot = 0
-    setupTime_tot = 0
-    totalTime_tot = 0
+for test_i in selected_tests:
 
-    # Accumulated counts (for avg.)
-    perfSim_mips_acc = 0
-    mips_acc = 0
-    delta_acc = 0
-    speedUp_acc = 0
+    mapKey = 'MAPExplorer_' + test_i
+    ischedKey = 'MAPExplorer_isched_' + test_i
+    m2isarKey = 'M2ISAR-Perf_' + test_i
+    compKey = 'Compile_' + test_i
+    nVars = numVariants[test_i]
 
-    # Make benchmark rows
-    rows = ""
-    for i, bm_i in enumerate(benchmarks):
+    if len(timingResults[mapKey]) > 0:
 
-        n = numInstr[i]
-        rows += f"{bm_i} & {n} &"
+        useISched = len(timingResults[ischedKey]) > 0
 
-        perfSim_simTime = round(timingResults['PerfSim'][i], 2)
-        expTime = round(perfSim_simTime*numVariants, 2)
-        perfSim_mips = round(((n*numVariants) / 1000000) / expTime, 2)
-        rows += f"{perfSim_simTime} & {expTime} & {perfSim_mips} &"
+        # Total counts
+        numInstr_tot = 0
+        perfSim_simTime_tot = 0
+        expTime_tot = 0
+        simTime_tot = 0
+        setupTime_tot = 0
+        totalTime_tot = 0
+        simTime_isched_tot = 0
 
-        simTime = round(timingResults['MAPExplorer_full'][i], 2)
-        setupTime = round(timingResults['BlockExt'][i] + timingResults['M2ISAR-Perf_full'][i] + timingResults['Compile_full'][i], 2)
-        totalTime = round(simTime + setupTime, 2)
-        mips = round(((n*numVariants) / 1000000) / totalTime, 2)
-        delta = round(expTime - totalTime, 2)
-        speedUp = round((expTime / totalTime), 2)
-        rows += f"{setupTime} & {simTime} & {totalTime} & {mips} & {delta} & {speedUp}x \\\\\n"
+        # Accumulated counts (for avg.)
+        perfSim_mips_acc = 0
+        mips_acc = 0
+        delta_acc = 0
+        speedUp_acc = 0
+        mips_isched_acc = 0
+        delta_isched_acc = 0
+        speedUp_isched_acc = 0
 
-        # Increase total counts
-        numInstr_tot += n
-        perfSim_simTime_tot += perfSim_simTime
-        expTime_tot += expTime
-        simTime_tot += simTime
-        setupTime_tot += setupTime
-        totalTime_tot += totalTime
+        # Make benchmark rows
+        rows = ""
+        for i, bm_i in enumerate(benchmarks):
 
-        # Increase accumulats
-        perfSim_mips_acc += perfSim_mips
-        mips_acc += mips
-        delta_acc += delta
-        speedUp_acc += speedUp
+            n = numInstr[i]
+            rows += f"{bm_i} & {n} &"
 
-    
-    # Make "total" row
-    total_row = ""
-    total_row += f"Total & {numInstr_tot} &"
+            perfSim_simTime = round(timingResults['PerfSim'][i], 2)
+            expTime = round(perfSim_simTime*nVars, 2)
+            perfSim_mips = round(((n*nVars) / 1000000) / expTime, 2)
+            rows += f"{perfSim_simTime} & {expTime} & {perfSim_mips} &"
 
-    perfSim_mips_tot = round(((numInstr_tot*numVariants) / 1000000) / expTime_tot, 2)
-    total_row += f"{round(perfSim_simTime_tot,2)} & {round(expTime_tot,2)} & {perfSim_mips_tot} &"
+            simTime = round(timingResults[mapKey][i], 2)
+            setupTime = round(timingResults['BlockExt'][i] + timingResults[m2isarKey][i] + timingResults[compKey][i], 2)
+            totalTime = round(simTime + setupTime, 2)
+            mips = round(((n*nVars) / 1000000) / totalTime, 2)
+            delta = round(expTime - totalTime, 2)
+            speedUp = round((expTime / totalTime), 2)
+            rows += f"{setupTime} & {simTime} & {totalTime} & {mips} & {delta} & {speedUp}x"
 
-    simTime_tot = round(simTime_tot, 2)
-    mips_tot = round(((numInstr_tot*numVariants) / 1000000) / totalTime_tot, 2)
-    delta_tot = round(expTime_tot - totalTime_tot, 2)
-    speedUp_tot = round((expTime_tot / totalTime_tot), 2)
-    total_row += f"{round(setupTime_tot,2)} & {round(simTime_tot,2)} & {round(totalTime_tot,2)} & {mips_tot} & {delta_tot} & {speedUp_tot}x \\\\\n"
+            if useISched:
+                simTime_isched = round(timingResults[ischedKey][i], 2)
+                mips_isched = round(((n*nVars) / 1000000) / simTime_isched, 2)
+                delta_isched = round(expTime - simTime_isched, 2)
+                speedUp_isched = round((expTime / simTime_isched), 2)
+                rows += f" & {simTime_isched} & {mips_isched} & {delta_isched} & {speedUp_isched}x"
 
-    # Make "Avg." row
-    avg_row = ""
+            rows += " \\\\\n"
 
-    numBenchmarks = len(benchmarks)
+            # Increase total counts
+            numInstr_tot += n
+            perfSim_simTime_tot += perfSim_simTime
+            expTime_tot += expTime
+            simTime_tot += simTime
+            setupTime_tot += setupTime
+            totalTime_tot += totalTime
+            if useISched:
+                simTime_isched_tot += simTime_isched
 
-    num_instr_avg = round(numInstr_tot / numBenchmarks, 2) 
-    avg_row += f"Avg. & {num_instr_avg} & "
+            # Increase accumulats
+            perfSim_mips_acc += perfSim_mips
+            mips_acc += mips
+            delta_acc += delta
+            speedUp_acc += speedUp
+            if useISched:
+                mips_isched_acc += mips_isched
+                delta_isched_acc += delta_isched
+                speedUp_isched_acc += speedUp_isched
 
-    perfSim_simTime_avg = round(perfSim_simTime_tot / numBenchmarks, 2)
-    expTime_avg = round(expTime_tot / numBenchmarks, 2)
-    perfSim_mips_avg = round(perfSim_mips_acc / numBenchmarks, 2)
-    avg_row += f"{perfSim_simTime_avg} & {expTime_avg} & {perfSim_mips_avg} &"
+        # Make "total" row
+        total_row = ""
+        total_row += f"Total & {numInstr_tot} &"
 
-    setupTime_avg = round(setupTime_tot / numBenchmarks, 2)
-    simTime_avg = round(simTime_tot / numBenchmarks, 2)
-    totalTime_avg = round(totalTime_tot / numBenchmarks, 2)
-    mips_avg = round(mips_acc / numBenchmarks, 2)
-    delta_avg = round(delta_acc / numBenchmarks, 2)
-    speedUp_avg = round(speedUp_acc / numBenchmarks, 2)
-    avg_row += f"{setupTime_avg} & {simTime_avg} & {totalTime_avg} & {mips_avg} & {delta_avg} & {speedUp_avg}x \\\\\n"
+        perfSim_mips_tot = round(((numInstr_tot*nVars) / 1000000) / expTime_tot, 2)
+        total_row += f"{round(perfSim_simTime_tot,2)} & {round(expTime_tot,2)} & {perfSim_mips_tot} &"
+
+        simTime_tot = round(simTime_tot, 2)
+        mips_tot = round(((numInstr_tot*nVars) / 1000000) / totalTime_tot, 2)
+        delta_tot = round(expTime_tot - totalTime_tot, 2)
+        speedUp_tot = round((expTime_tot / totalTime_tot), 2)
+        total_row += f"{round(setupTime_tot,2)} & {round(simTime_tot,2)} & {round(totalTime_tot,2)} & {mips_tot} & {delta_tot} & {speedUp_tot}x"
+
+        if useISched:
+            mips_isched_tot = round(((numInstr_tot*nVars) / 1000000) / simTime_isched_tot, 2)
+            delta_isched_tot = round(expTime_tot - simTime_isched_tot, 2)
+            speedUp_isched_tot = round((expTime_tot / simTime_isched_tot), 2)
+            total_row += f" & {round(simTime_isched_tot,2)} & {mips_isched_tot} & {delta_isched_tot} & {speedUp_isched_tot}x"
+
+        total_row += " \\\\\n"
+
+        # Make "Avg." row
+        avg_row = ""
+
+        numBenchmarks = len(benchmarks)
+
+        num_instr_avg = round(numInstr_tot / numBenchmarks, 2) 
+        avg_row += f"Avg. & {num_instr_avg} & "
+
+        perfSim_simTime_avg = round(perfSim_simTime_tot / numBenchmarks, 2)
+        expTime_avg = round(expTime_tot / numBenchmarks, 2)
+        perfSim_mips_avg = round(perfSim_mips_acc / numBenchmarks, 2)
+        avg_row += f"{perfSim_simTime_avg} & {expTime_avg} & {perfSim_mips_avg} &"
+
+        setupTime_avg = round(setupTime_tot / numBenchmarks, 2)
+        simTime_avg = round(simTime_tot / numBenchmarks, 2)
+        totalTime_avg = round(totalTime_tot / numBenchmarks, 2)
+        mips_avg = round(mips_acc / numBenchmarks, 2)
+        delta_avg = round(delta_acc / numBenchmarks, 2)
+        speedUp_avg = round(speedUp_acc / numBenchmarks, 2)
+        avg_row += f"{setupTime_avg} & {simTime_avg} & {totalTime_avg} & {mips_avg} & {delta_avg} & {speedUp_avg}x"
+
+        if useISched:
+            simTime_isched_avg = round(simTime_isched_tot / numBenchmarks, 2)
+            mips_isched_avg = round(mips_isched_acc / numBenchmarks, 2)
+            delta_isched_avg = round(delta_isched_acc / numBenchmarks, 2)
+            speedUp_isched_avg = round(speedUp_isched_acc / numBenchmarks, 2)
+            avg_row += f" & {simTime_isched_avg} & {mips_isched_avg} & {delta_isched_avg} & {speedUp_isched_avg}x"
+
+        avg_row += " \\\\\n"
 
 
-    # Create Table
-    tableContent = rf"""
-    \documentclass{{article}}
-    \usepackage[margin=2cm]{{geometry}}
-    \usepackage{{pdflscape}}
+        tabHeader1 = "\multicolumn{2}{c}{Benchmarks} & \multicolumn{3}{c}{PerfSim} & \multicolumn{6}{c}{MAPExplorer}"
+        tabHeader2 = "Name & \#Instr & SimTime (1var) & SimTime (exp.) & MIPS & SetupTime & SimTime & Total & MIPS & $\Delta$ & Speed-Up"
+        if useISched:
+            tabForm = "{c | c | c c c | c c c c c c | c c c c}"
+            tabHeader1 += " & \multicolumn{4}{c}{MAPExplorer (instr-sched.)}"
+            tabHeader2 += " & SimTime & MIPS & $\Delta$ & Speed-Up"
+        else:
+            tabForm = "{c | c | c c c | c c c c c c}"
+        tabHeader1 += "\\\\"
+        tabHeader2 += "\\\\"
 
-    \begin{{document}}
-    \begin{{landscape}}
+        # Create Table
+        tableContent = rf"""
+        \documentclass{{article}}
+        \usepackage[margin=2cm]{{geometry}}
+        \usepackage{{pdflscape}}
+        \usepackage{{adjustbox}}
 
-    \begin{{table}}[ht]
-    \centering
-    \caption{{Results: {testName}, {core.upper()}, {benchmarkVariant}, Variants: {numVariants}}}
-    \centering
-    \begin{{tabular}}{{c | c | c c c | c c c c c c}}
-    \hline
-    \multicolumn{{2}}{{c}}{{Benchmarks}} & \multicolumn{{3}}{{c}}{{PerfSim}} & \multicolumn{{6}}{{c}}{{MAPExplorer}}\\
-    Name & \#Instr & SimTime (1var) & SimTime (exp.) & MIPS & SetupTime & SimTime & Total & MIPS & $\Delta$ & Speed-Up \\
-    \hline
-    {rows}
-    \hline
-    {total_row}
-    \hline
-    {avg_row}
-    \hline
-    \end{{tabular}}
-    \end{{table}}
+        \begin{{document}}
+        \begin{{landscape}}
 
-    \end{{landscape}}
-    \end{{document}}
-    """
+        \begin{{table}}[ht]
+        \centering
+        \caption{{Results: {testName}, {core.upper()}, {benchmarkVariant}, Variants: {nVars}}}
+        \centering
+        \begin{{adjustbox}}{{max width=\linewidth}}
+        \begin{{tabular}}{tabForm}
+        \hline
+        {tabHeader1}
+        {tabHeader2}
+        \hline
+        {rows}
+        \hline
+        {total_row}
+        \hline
+        {avg_row}
+        \hline
+        \end{{tabular}}
+        \end{{adjustbox}}
+        \end{{table}}
 
-    texFile = dirPath / f"results_{testName}_{core}_{benchmarkVariant}.tex"
-    texFile.write_text(tableContent)
+        \end{{landscape}}
+        \end{{document}}
+        """
 
-    os.system("pdflatex -output-directory=" + str(dirPath) + " " + str(texFile))    
+        #print(tableContent)
+
+        texFile = dirPath / f"results_{testName}_{core}_{benchmarkVariant}_{nVars}.tex"
+        texFile.write_text(tableContent)
+
+        os.system("pdflatex -output-directory=" + str(dirPath) + " " + str(texFile))    

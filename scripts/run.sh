@@ -2,6 +2,8 @@
 
 set -e
 
+echo "COFO"
+
 . $(dirname "${0}")/../.env
 
 TARGET_SW=$1
